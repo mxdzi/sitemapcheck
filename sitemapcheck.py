@@ -16,6 +16,10 @@ def main(args):
 
             print("Found: {} urls".format(len(urls)))
 
+            for url in urls:
+                result = requests.request('GET', url)
+                print(result.status_code, url)
+
 
 if __name__ == "__main__":
     main(sys.argv[1:])
