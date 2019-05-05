@@ -1,8 +1,20 @@
 import sys
+from xml.etree import ElementTree
+
+import requests
 
 
-def main(argv):
-    pass
+def main(args):
+    if len(args):
+        result = requests.request('GET', args[0])
+        if result.status_code == 200:
+            sitemap_xml = ElementTree.fromstring(result.text)
+
+            urls = []
+            for loc in sitemap_xml:
+                urls.append(loc[0].text)
+
+            print("Found: {} urls".format(len(urls)))
 
 
 if __name__ == "__main__":
