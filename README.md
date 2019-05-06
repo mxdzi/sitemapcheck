@@ -7,3 +7,9 @@ A simple Python script for checking urls in sitemap.xml file.
 To check urls in sitemap pass url to sitemap.xml as first argument:
 
     sitemapcheck.py https://example.com/sitemap.xml
+
+## Tests
+
+Run tests with:
+
+    pytest --cov=sitemapcheck --cov-report html

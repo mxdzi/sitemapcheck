@@ -21,5 +21,5 @@ def main(args):
                 print(result.status_code, url)
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: nocover
     main(sys.argv[1:])
