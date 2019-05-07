@@ -4,9 +4,12 @@ from xml.etree import ElementTree
 import requests
 
 
-def main(args):
-    if len(args):
-        result = requests.request('GET', args[0])
+class SitemapCheck:
+    def __init__(self, url):
+        self.url = url
+
+    def check(self):
+        result = requests.request('GET', self.url)
         if result.status_code == 200:
             sitemap_xml = ElementTree.fromstring(result.text)
 
@@ -19,6 +22,12 @@ def main(args):
             for url in urls:
                 result = requests.request('GET', url)
                 print(result.status_code, url)
+
+
+def main(args):
+    if len(args):
+        sitemapcheck = SitemapCheck(args[0])
+        sitemapcheck.check()
 
 
 if __name__ == "__main__":  # pragma: nocover
