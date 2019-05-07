@@ -11,17 +11,20 @@ class SitemapCheck:
     def check(self):
         result = requests.request('GET', self.url)
         if result.status_code == 200:
-            sitemap_xml = ElementTree.fromstring(result.text)
+            self._parse_xml(result.text)
+            self._check_urls()
 
-            urls = []
-            for loc in sitemap_xml:
-                urls.append(loc[0].text)
+    def _parse_xml(self, sitemap):
+        sitemap_xml = ElementTree.fromstring(sitemap)
+        self.urls = []
+        for loc in sitemap_xml:
+            self.urls.append(loc[0].text)
+        print("Found: {} urls".format(len(self.urls)))
 
-            print("Found: {} urls".format(len(urls)))
-
-            for url in urls:
-                result = requests.request('GET', url)
-                print(result.status_code, url)
+    def _check_urls(self):
+        for url in self.urls:
+            result = requests.request('GET', url)
+            print(result.status_code, url)
 
 
 def main(args):
