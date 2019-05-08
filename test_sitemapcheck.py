@@ -21,7 +21,10 @@ def test_main(mock_requests, capsys):
     """
     mock_requests.request.return_value = mock_response
 
-    main([""])
+    args = MagicMock()
+    args.URL = "https://example.com/sitemap.xml"
+
+    main(args)
     captured = capsys.readouterr()
     output = ("Found: 2 urls\n"
               "200 https://example.com/\n"

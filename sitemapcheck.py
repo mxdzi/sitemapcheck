@@ -1,8 +1,9 @@
-import sys
+import argparse
 from xml.etree import ElementTree
 
 import requests
 
+version = 1.0
 
 class SitemapCheck:
     def __init__(self, url):
@@ -28,10 +29,14 @@ class SitemapCheck:
 
 
 def main(args):
-    if len(args):
-        sitemapcheck = SitemapCheck(args[0])
+    if args.URL:
+        sitemapcheck = SitemapCheck(args.URL)
         sitemapcheck.check()
 
 
 if __name__ == "__main__":  # pragma: nocover
-    main(sys.argv[1:])
+    parser = argparse.ArgumentParser(prog="SitemapCheck")
+    parser.add_argument('URL', help='Full URL to sitemap file ex: "https://example.com/sitemap.xml"')
+    parser.add_argument('--version', '-v', action='version', version=f"%(prog)s {version}")
+    args = parser.parse_args()
+    main(args)
