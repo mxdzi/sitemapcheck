@@ -6,11 +6,13 @@ import requests
 version = 1.0
 
 class SitemapCheck:
-    def __init__(self, url):
+    def __init__(self, url, login, password):
         self.url = url
+        self.login = login
+        self.password = password
 
     def check(self):
-        result = requests.request('GET', self.url)
+        result = requests.request('GET', self.url, auth=(self.login, self.password))
         if result.status_code == 200:
             self._parse_xml(result.text)
             self._check_urls()
@@ -30,13 +32,15 @@ class SitemapCheck:
 
 def main(args):
     if args.URL:
-        sitemapcheck = SitemapCheck(args.URL)
+        sitemapcheck = SitemapCheck(args.URL, args.login, args.password)
         sitemapcheck.check()
 
 
 if __name__ == "__main__":  # pragma: nocover
     parser = argparse.ArgumentParser(prog="SitemapCheck")
     parser.add_argument('URL', help='Full URL to sitemap file ex: "https://example.com/sitemap.xml"')
+    parser.add_argument('--login', '-l', nargs='?', help='login')
+    parser.add_argument('--password', '-p', nargs='?', help='password')
     parser.add_argument('--version', '-v', action='version', version=f"%(prog)s {version}")
     args = parser.parse_args()
     main(args)
