@@ -31,9 +31,8 @@ class SitemapCheck:
 
 
 def main(args):
-    if args.URL:
-        sitemapcheck = SitemapCheck(args.URL, args.login, args.password)
-        sitemapcheck.check()
+    sitemapcheck = SitemapCheck(args.URL, args.login, args.password)
+    sitemapcheck.check()
 
 
 if __name__ == "__main__":  # pragma: nocover
