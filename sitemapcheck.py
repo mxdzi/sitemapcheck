@@ -4,15 +4,16 @@ from xml.etree import ElementTree
 import requests
 from requests.auth import HTTPBasicAuth, HTTPDigestAuth
 
-version = 1.2
+version = 1.3
 
 
 class SitemapCheck:
-    def __init__(self, url, login, password, auth):
+    def __init__(self, url, login, password, auth, method):
         self.url = url
         self.login = login
         self.password = password
         self.auth = auth
+        self.method = method
         self.urls = []
         self.results = []
 
@@ -36,13 +37,13 @@ class SitemapCheck:
 
     def _check_urls(self):
         for url in self.urls:
-            result = requests.request('GET', url)
+            result = requests.request(self.method, url)
             self.results.append((result.status_code, url))
             print(result.status_code, url)
 
 
 def main(args):
-    sitemapcheck = SitemapCheck(args.URL, args.login, args.password, args.auth)
+    sitemapcheck = SitemapCheck(args.URL, args.login, args.password, args.auth, args.method)
     sitemapcheck.check()
 
 
@@ -52,6 +53,7 @@ if __name__ == "__main__":  # pragma: nocover
     parser.add_argument('--login', '-l', nargs='?', help='login')
     parser.add_argument('--password', '-p', nargs='?', help='password')
     parser.add_argument('--auth', '-a', choices=['basic', 'digest'], help='Auth method')
+    parser.add_argument('--method', '-m', choices=['GET', 'HEAD'], default='GET', help='HTTP method for checking urls')
     parser.add_argument('--version', '-v', action='version', version=f"%(prog)s {version}")
     args = parser.parse_args()
     main(args)
