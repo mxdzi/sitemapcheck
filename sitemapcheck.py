@@ -4,7 +4,7 @@ from xml.etree import ElementTree
 import requests
 from requests.auth import HTTPBasicAuth, HTTPDigestAuth
 
-version = 1.4
+version = 1.5
 
 
 class SitemapCheck:
@@ -17,6 +17,7 @@ class SitemapCheck:
         self.verbose = verbose
         self.urls = []
         self.results = []
+        self.errors = 0
 
     def check(self):
         if self.auth == 'basic':
@@ -41,6 +42,8 @@ class SitemapCheck:
         for url in self.urls:
             result = requests.request(self.method, url)
             self.results.append((result.status_code, url))
+            if result.status_code >= 400:
+                self.errors += 1
             if self.verbose:
                 print(result.status_code, url)
 
@@ -48,10 +51,16 @@ class SitemapCheck:
 def main(args):
     sitemapcheck = SitemapCheck(args.URL, args.login, args.password, args.auth, args.method, args.verbose)
     sitemapcheck.check()
+
     if not args.verbose:
         print("Found: {} urls".format(len(sitemapcheck.urls)))
         for status_code, url in sitemapcheck.results:
             print(status_code, url)
+
+    all = len(sitemapcheck.urls)
+    tested = len(sitemapcheck.results)
+    percent = ((tested - sitemapcheck.errors) / all) * 100
+    print(f"Tested {tested} of {all}, {percent}% correct.")
 
 
 if __name__ == "__main__":  # pragma: nocover
