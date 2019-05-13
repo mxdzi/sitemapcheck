@@ -6,12 +6,15 @@ from requests.auth import HTTPBasicAuth, HTTPDigestAuth
 
 version = 1.2
 
+
 class SitemapCheck:
     def __init__(self, url, login, password, auth):
         self.url = url
         self.login = login
         self.password = password
         self.auth = auth
+        self.urls = []
+        self.results = []
 
     def check(self):
         if self.auth == 'basic':
@@ -27,7 +30,6 @@ class SitemapCheck:
 
     def _parse_xml(self, sitemap):
         sitemap_xml = ElementTree.fromstring(sitemap)
-        self.urls = []
         for loc in sitemap_xml:
             self.urls.append(loc[0].text)
         print("Found: {} urls".format(len(self.urls)))
@@ -35,6 +37,7 @@ class SitemapCheck:
     def _check_urls(self):
         for url in self.urls:
             result = requests.request('GET', url)
+            self.results.append((result.status_code, url))
             print(result.status_code, url)
 
 
