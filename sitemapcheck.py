@@ -4,7 +4,7 @@ from xml.etree import ElementTree
 import requests
 from requests.auth import HTTPBasicAuth, HTTPDigestAuth
 
-version = 1.5
+version = 1.6
 
 
 class SitemapCheck:
@@ -20,12 +20,7 @@ class SitemapCheck:
         self.errors = 0
 
     def check(self):
-        if self.auth == 'basic':
-            auth = HTTPBasicAuth(self.login, self.password)
-        elif self.auth == 'digest':
-            auth = HTTPDigestAuth(self.login, self.password)
-        else:
-            auth = None
+        auth = self._get_auth()
         result = requests.request('GET', self.url, auth=auth)
         if result.status_code == 200:
             self._parse_xml(result.text)
@@ -39,13 +34,23 @@ class SitemapCheck:
             print("Found: {} urls".format(len(self.urls)))
 
     def _check_urls(self):
+        auth = self._get_auth()
         for url in self.urls:
-            result = requests.request(self.method, url)
+            result = requests.request(self.method, url, auth=auth)
             self.results.append((result.status_code, url))
             if result.status_code >= 400:
                 self.errors += 1
             if self.verbose:
                 print(result.status_code, url)
+
+    def _get_auth(self):
+        if self.auth == 'basic':
+            auth = HTTPBasicAuth(self.login, self.password)
+        elif self.auth == 'digest':
+            auth = HTTPDigestAuth(self.login, self.password)
+        else:
+            auth = None
+        return auth
 
 
 def main(args):
