@@ -65,7 +65,7 @@ def main(args):
 
     all = len(sitemapcheck.urls)
     tested = len(sitemapcheck.results)
-    percent = ((tested - sitemapcheck.errors) / all) * 100
+    percent = ((tested - sitemapcheck.errors) / all) * 100 if all else 0
     print(f"Tested {tested} of {all}, {percent}% correct.")
 
 
