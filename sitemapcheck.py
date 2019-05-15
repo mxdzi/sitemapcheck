@@ -75,7 +75,7 @@ if __name__ == "__main__":  # pragma: nocover
     parser.add_argument('--password', '-p', nargs='?', help='password')
     parser.add_argument('--auth', '-a', choices=['basic', 'digest'], help='Auth method')
     parser.add_argument('--method', '-m', choices=['GET', 'HEAD'], default='GET', help='HTTP method for checking urls')
-    parser.add_argument('--verbose', '-v', action="store_true")
+    parser.add_argument('--verbose', '-v', action="store_true", help="Show results in realtime")
     parser.add_argument('--version', '-V', action='version', version=f"%(prog)s {version}")
     args = parser.parse_args()
     main(args)
