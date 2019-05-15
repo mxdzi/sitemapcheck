@@ -31,7 +31,7 @@ class SitemapCheck:
         for loc in sitemap_xml:
             self.urls.append(loc[0].text)
         if self.verbose:
-            print("Found: {} urls".format(len(self.urls)))
+            print(f"Found: {len(self.urls)} urls")
 
     def _check_urls(self):
         auth = self._get_auth()
@@ -58,7 +58,7 @@ def main(args):
     sitemapcheck.check()
 
     if not args.verbose:
-        print("Found: {} urls".format(len(sitemapcheck.urls)))
+        print(f"Found: {len(sitemapcheck.urls)} urls")
         for status_code, url in sitemapcheck.results:
             print(status_code, url)
 
