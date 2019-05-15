@@ -8,7 +8,7 @@ version = 1.6
 
 
 class SitemapCheck:
-    def __init__(self, url, login, password, auth, method, verbose):
+    def __init__(self, url, *, login=None, password=None, auth=None, method='GET', verbose=False):
         self.url = url
         self.login = login
         self.password = password
@@ -54,7 +54,8 @@ class SitemapCheck:
 
 
 def main(args):
-    sitemapcheck = SitemapCheck(args.URL, args.login, args.password, args.auth, args.method, args.verbose)
+    sitemapcheck = SitemapCheck(url=args.url, login=args.login, password=args.password, auth=args.auth,
+                                method=args.method, verbose=args.verbose)
     sitemapcheck.check()
 
     if not args.verbose:
@@ -70,7 +71,7 @@ def main(args):
 
 if __name__ == "__main__":  # pragma: nocover
     parser = argparse.ArgumentParser(prog="SitemapCheck")
-    parser.add_argument('URL', help='Full URL to sitemap file ex: "https://example.com/sitemap.xml"')
+    parser.add_argument('url', metavar='URL', help='Full URL to sitemap file ex: "https://example.com/sitemap.xml"')
     parser.add_argument('--login', '-l', nargs='?', help='login')
     parser.add_argument('--password', '-p', nargs='?', help='password')
     parser.add_argument('--auth', '-a', choices=['basic', 'digest'], help='Auth method')
