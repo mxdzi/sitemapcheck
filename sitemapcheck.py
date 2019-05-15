@@ -4,7 +4,7 @@ from xml.etree import ElementTree
 import requests
 from requests.auth import HTTPBasicAuth, HTTPDigestAuth
 
-version = 1.6
+version = 1.7
 
 
 class SitemapCheck:
@@ -35,8 +35,10 @@ class SitemapCheck:
 
     def _check_urls(self):
         auth = self._get_auth()
+        session = requests.Session()
+        session.auth = auth
         for url in self.urls:
-            result = requests.request(self.method, url, auth=auth)
+            result = session.request(self.method, url, auth=auth)
             self.results.append((result.status_code, url))
             if result.status_code >= 400:
                 self.errors += 1
