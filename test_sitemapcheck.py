@@ -1,6 +1,6 @@
 from unittest.mock import MagicMock, patch
 
-from sitemapcheck import main
+from sitemapcheck import main, SitemapCheck, HTTPBasicAuth, HTTPDigestAuth
 
 
 @patch('sitemapcheck.requests.Session.request')
@@ -64,67 +64,13 @@ def test_main_not_verbose(mock_session, capsys):
     assert captured.out == output
 
 
-@patch('sitemapcheck.requests.Session.request')
-def test_main_basic_auth(mock_session, capsys):
-    mock_response = MagicMock()
-    mock_response.status_code = 200
-    mock_response.text = """<?xml version="1.0" encoding="UTF-8"?>
-    <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-        <url>
-            <loc>https://example.com/</loc>
-            <lastmod>2019-01-01</lastmod>
-        </url>
-        <url>
-            <loc>https://example.com/site.html</loc>
-            <lastmod>2019-01-02</lastmod>
-        </url>
-    </urlset>
-    """
-    mock_session.return_value = mock_response
-
-    args = MagicMock()
-    args.URL = "https://example.com/sitemap.xml"
-    args.login = "user"
-    args.password = "password"
-    args.auth = "basic"
-
-    main(args)
-    captured = capsys.readouterr()
-    output = ("Found: 2 urls\n"
-              "200 https://example.com/\n"
-              "200 https://example.com/site.html\n"
-              "Tested 2 of 2, 100.0% correct.\n")
-    assert captured.out == output
+def test_main_basic_auth():
+    checker = SitemapCheck(url="", login="user", password="password", auth="basic")
+    assert isinstance(checker._get_auth(), HTTPBasicAuth)
+    assert checker._get_auth() == HTTPBasicAuth("user", "password")
 
 
-@patch('sitemapcheck.requests.Session.request')
-def test_main_digest_auth(mock_session, capsys):
-    mock_response = MagicMock()
-    mock_response.status_code = 200
-    mock_response.text = """<?xml version="1.0" encoding="UTF-8"?>
-    <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-        <url>
-            <loc>https://example.com/</loc>
-            <lastmod>2019-01-01</lastmod>
-        </url>
-        <url>
-            <loc>https://example.com/site.html</loc>
-            <lastmod>2019-01-02</lastmod>
-        </url>
-    </urlset>
-    """
-    mock_session.return_value = mock_response
-
-    args = MagicMock()
-    args.URL = "https://example.com/sitemap.xml"
-    args.login = "user"
-    args.password = "password"
-    args.auth = "digest"
-
-    main(args)
-    captured = capsys.readouterr()
-    output = ("Found: 2 urls\n"
-              "200 https://example.com/\n"
-              "200 https://example.com/site.html\n"
-              "Tested 2 of 2, 100.0% correct.\n")
-    assert captured.out == output
+def test_main_digest_auth():
+    checker = SitemapCheck(url="", login="user", password="password", auth="digest")
+    assert isinstance(checker._get_auth(), HTTPDigestAuth)
+    assert checker._get_auth() == HTTPDigestAuth("user", "password")
